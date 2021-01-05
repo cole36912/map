@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Life 360 Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+</head>
+<body>
+<div id="mapid" style="width: 100%; height: 800px;"></div>
+</body>
+<script>
+    let map = document.getElementById("mapid");
+    /**@type {String}*/ let url = window.location.href;
+    /**@type {Number}*/ let pos = url.indexOf('#') + 1;
+    let fam = JSON.parse(decodeURI(url.substr(pos)));
+    let height = document.documentElement.clientHeight - map.offsetTop
+    let width = document.documentElement.clientWidth;
+    let left = 0 - map.offsetLeft;
+    map.setAttribute("style", "width: " + width + "px; height: " + height + "px; left: " + left + "px;");
+    let mymap = L.map('mapid').setView([33.0134018, -117.1079754], 16);
+    let light = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibmRlY2FybG8iLCJhIjoiY2p3NXo0bTk0MXlhdDQzcXBoOHBuMnF5ZCJ9.EuT7mYiOIGxvgIxYvLIkOA';
+    L.tileLayer(light, {
+        attribution: '',
+        maxZoom: 26,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoibmRlY2FybG8iLCJhIjoiY2p3NXo0bTk0MXlhdDQzcXBoOHBuMnF5ZCJ9.EuT7mYiOIGxvgIxYvLIkOA'
+    }).addTo(mymap);
+    console.log(fam);
+    let loc = [0, 0]
+    for(let member of fam.members){
+        loc = [parseFloat(member.location.latitude), parseFloat(member.location.longitude)];
+        L.marker(loc, member.avatar ? {icon: L.icon({
+                iconUrl: member.avatar,
+                iconSize: [40, 40],
+                tooltipAnchor: [10, 0]
+            })} : {}).bindTooltip(`${member.firstName} ${member.lastName}\nBattery: ${member.location.battery}%\nEmail: ${member.loginEmail}\nPhone: ${member.loginPhone}`).addTo(mymap);
+    }
+    mymap.flyTo(loc);
+
+
+
+
+</script>
+</html>
