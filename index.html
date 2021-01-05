@@ -12,7 +12,7 @@
     let map = document.getElementById("mapid");
     /**@type {String}*/ let url = window.location.href;
     /**@type {Number}*/ let pos = url.indexOf('#') + 1;
-    let fam = JSON.parse(decodeURI(url.substr(pos)));
+    let fam = JSON.parse(decodeURI(decodeURI(url.substr(pos))));
     let height = document.documentElement.clientHeight - map.offsetTop
     let width = document.documentElement.clientWidth;
     let left = 0 - map.offsetLeft;
